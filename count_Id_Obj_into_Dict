@@ -1,15 +1,12 @@
 #version cinema4d R20
-
-#scipt qui décrit le nbre d'occurrence de chaque type d'objet d'une scène cinéma4d dans un dictionnaire
+#scipt qui décrit le nbre d'occurrence de chaque type d'objet d'une scène cinéma4d dans un dictionnaire à partir de son id
 
 import c4d
 
 dictObj={}
 
-
 def navigateHierarchy(objet):
     while objet:
-
         if dictObj.has_key(objet.GetType()):  
             dictObj[objet.GetType()]+=1
         else:  
@@ -20,14 +17,10 @@ def navigateHierarchy(objet):
 
 
 def main():
-
     premierObjet=doc.GetFirstObject()
     navigateHierarchy(premierObjet)
-
     c4d.EventAdd()
-
     print dictObj
-
 
 
 # Execute main()
