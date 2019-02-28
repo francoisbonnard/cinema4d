@@ -1,16 +1,21 @@
-#version cinema4d R20
-#scipt qui décrit le nbre d'occurrence de chaque type d'objet d'une scène cinéma4d dans un dictionnaire à partir de son id
+# version cinema4d R20
+# script qui décrit le nbre d'occurrence de chaque type d'objet d'une scène Cinéma4d dans un dictionnaire à partir de leur id
+# et qui affiche le nbre d'objet avec leur nom à partir d'un dictionnaire contenu dans un fichier json
+# Auteur François Bonnard
 
 import c4d
+import json
 
-dictObj={}
+ListObjById={}
+dictName={}
 
+#fonction recursive
 def navigateHierarchy(objet):
     while objet:
-        if dictObj.has_key(objet.GetType()):  
-            dictObj[objet.GetType()]+=1
-        else:  
-            dictObj[objet.GetType()]=1
+        if ListObjById.has_key(objet.GetType()):
+            ListObjById[objet.GetType()]+=1
+        else:
+            ListObjById[objet.GetType()]=1
 
         navigateHierarchy(objet.GetDown())
         objet=objet.GetNext()
@@ -20,7 +25,17 @@ def main():
     premierObjet=doc.GetFirstObject()
     navigateHierarchy(premierObjet)
     c4d.EventAdd()
-    print dictObj
+
+    #open json
+    with open('dictNameR20.json') as json_data:
+        dictName = json.load(json_data)
+
+    #process de matching avec le dictionnaire json
+    for k, v in ListObjById.iteritems():
+        try:
+            print dictName[str(k)],v
+        except KeyError:
+            print 'pas de correspondance pour l\'objet id %s'%k
 
 
 # Execute main()
